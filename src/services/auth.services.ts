@@ -1,8 +1,10 @@
-import { registerData, User } from "interfaces/user.interface";
+import { loginData, PasswordResetData, registerData, User } from "interfaces/user.interface";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 import userModel from "models/User";
 import HttpException from "exceptions/HttpException";
 import { emailValidator, schema } from "middlewares/validation.middleware";
+import { DataStoredInToken, UserInfo } from "@/interfaces/auth.interface";
 
 //REGISTER A USER
 export const registerService = async (userData: registerData): Promise<User> => {
@@ -42,4 +44,60 @@ export const registerService = async (userData: registerData): Promise<User> => 
         const createUser: User = await newUser.save()
         return createUser
     }
+}
+
+//LOGIN AN EXISTING USER
+export const loginService = async (userData: loginData): Promise<UserInfo> => {
+    const user = await userModel.findOne({ email: userData.email })
+    if(!user) throw new HttpException(404, "A user with this email does not exist")
+
+    const isPasswordCorrect = await bcrypt.compare(userData.password, user.password)
+    if(!isPasswordCorrect) throw new HttpException(403, "Username and Password does not exist")
+
+    const dataStoredInToken: DataStoredInToken = {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin
+    }
+    const accessToken = jwt.sign(dataStoredInToken, process.env.JWT_SEC, { expiresIn: "30d" })
+    const userInfo: UserInfo = {
+        id: user._id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        accountNumber: user.accountNumber,
+        balance: user.balance,
+        token: accessToken
+    }
+    return userInfo
+}
+
+//PASSWORD RESET SERVICE
+export const passwordResetService = async (userData: PasswordResetData): Promise<string> => {
+    const user = await userModel.findOne({ email: userData.email })
+    if(!user) throw new HttpException(404, "A user with this email does not exist")
+
+    function generateRandomAlphanumeric(length: number) {
+        const characters: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let randomString: string = "";
+      
+        for (let i = 0; i < length; i++) {
+          const randomIndex: number = Math.floor(Math.random() * characters.length);
+          randomString += characters.charAt(randomIndex);
+        }
+      
+        return randomString;
+    }
+    const resetPassword = generateRandomAlphanumeric(10)
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(resetPassword, salt)
+    await userModel.findOneAndUpdate(
+        user._id,
+        { $set: { password: hashedPassword } },
+        { new: true }
+    )
+    return resetPassword
 }

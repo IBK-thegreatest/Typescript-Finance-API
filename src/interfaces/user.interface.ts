@@ -13,6 +13,10 @@ export interface loginData {
     password: string
 }
 
+export interface PasswordResetData {
+    email: string
+}
+
 export interface User {
     username: string,
     firstName: string,
