@@ -1,4 +1,4 @@
-import express from "express"
+import express, { NextFunction, Request, Response } from "express"
 import mongoose from "mongoose"
 import compression from "compression"
 import helmet from "helmet"
@@ -12,6 +12,7 @@ import budgetRoutes from "./routes/budget.routes"
 import goalRoutes from "./routes/goal.routes"
 import notificationRoutes from "./routes/notification.routes"
 import errorMiddleware from "middlewares/error.middleware"
+import HttpException from "./exceptions/HttpException"
 
 dotenv.config();
 mongoose.connect(
@@ -35,9 +36,20 @@ app.use("/api/v1/budgets", budgetRoutes)
 app.use("/api/v1/goals", goalRoutes)
 app.use("/api/v1/notifications", notificationRoutes)
 app.use("/api/v1/transactions", transactionRoutes)
+app.use((err: HttpException, req: Request, res: Response, next: NextFunction) => {
+    const errorStatus = err.status || 500
+    const errorMessage = err.message || "Something went wrong!!!"
+    res.status(errorStatus).json({
+        success: false,
+        status: errorStatus,
+        message: errorMessage,
+        stack: err.stack
+    })
+})
 
 
 const PORT: number = 5000
 app.listen(PORT, () => {
     console.log(`Backend Server is currently running on port ${PORT}`);
 })
+

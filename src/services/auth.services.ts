@@ -5,7 +5,7 @@ import HttpException from "exceptions/HttpException";
 import { emailValidator, schema } from "middlewares/validation.middleware";
 
 //REGISTER A USER
-export const authService = async (userData: registerData): Promise<User> => {
+export const registerService = async (userData: registerData): Promise<User> => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(userData.password, salt)
     
