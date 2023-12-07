@@ -1,10 +1,10 @@
-import { loginData, PasswordResetData, registerData, User } from "interfaces/user.interface";
+import { loginData, PasswordResetData, registerData, User } from "../interfaces/user.interface";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import userModel from "models/User";
-import HttpException from "exceptions/HttpException";
-import { emailValidator, schema } from "middlewares/validation.middleware";
-import { DataStoredInToken, UserInfo } from "@/interfaces/auth.interface";
+import userModel from "../models/User";
+import HttpException from "../exceptions/HttpException";
+import { emailValidator, schema } from "../middlewares/validation.middleware";
+import { DataStoredInToken, UserInfo } from "../interfaces/auth.interface";
 
 //REGISTER A USER
 export const registerService = async (userData: registerData): Promise<User> => {

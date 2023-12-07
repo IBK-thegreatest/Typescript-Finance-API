@@ -20,16 +20,6 @@
       "resolveJsonModule": true,
       "importHelpers": true,
       "baseUrl": "src",
-      "paths": {
-        "@/*": ["*"],
-        "@controllers/*": ["controllers/*"],
-        "@models/*": ["models/*"],
-        "@exceptions/*": ["exceptions/*"],
-        "@interfaces/*": ["interfaces/*"],
-        "@middlewares/*": ["middlewares/*"],
-        "@routes/*": ["routes/*"],
-        "@services/*": ["services/*"]
-      }
     },
     "include": ["src/**/*.ts", "src/**/*.json", ".env", "src/entity/.entity.ts"],
     "exclude": [

@@ -27,3 +27,7 @@ export interface User {
     accountNumber: number,
     balance: number
 }
+
+export interface UserWithId extends User {
+    id: any
+}
