@@ -9,7 +9,7 @@ const TransactionSchema = new mongoose.Schema(
         category: {
             type: String,
             required: true,
-            enum: ["deposit", "withdrawal", "transfer"]
+            enum: ["income", "expense"]
         },
         description: {
             type: String,
@@ -21,7 +21,8 @@ const TransactionSchema = new mongoose.Schema(
         },
         transactionType: {
             type: String,
-            required: true
+            required: true,
+            enum: ["deposit", "withdrawal", "transfer"]
         }
     },
     {
