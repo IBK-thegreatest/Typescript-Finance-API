@@ -10,7 +10,7 @@ export const createBudgetService = async (userId: string, budgetData: Budget): P
         category: budgetData.category,
         budgetLimit: budgetData.budgetLimit
     }
-    const newBudget = new budgetModel(budgetData)
+    const newBudget = new budgetModel(data)
     const createBudget: Budget = await newBudget.save();
     return createBudget
 }
