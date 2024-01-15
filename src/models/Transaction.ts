@@ -15,6 +15,14 @@ const TransactionSchema = new mongoose.Schema(
             type: String,
             required: false
         },
+        fromAccountNumber: {
+            type: Number,
+            required: true
+        },
+        toAccountNumber: {
+            type: Number,
+            required: true
+        },
         amount: {
             type: Number,
             required: true
